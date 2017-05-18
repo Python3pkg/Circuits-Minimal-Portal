@@ -43,8 +43,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Circuits Minimal Portal'
-copyright = u'2012, Michael N. Lipp'
+project = 'Circuits Minimal Portal'
+copyright = '2012, Michael N. Lipp'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -181,8 +181,8 @@ htmlhelp_basename = 'CircuitsMinimalPortaldoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'CircuitsMinimalPortal.tex', u'Circuits Minimal Portal Documentation',
-   u'Michael N. Lipp', 'manual'),
+  ('index', 'CircuitsMinimalPortal.tex', 'Circuits Minimal Portal Documentation',
+   'Michael N. Lipp', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -214,8 +214,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'circuitsminpor', u'Circuits Minimal Portal Documentation',
-     [u'Michael N. Lipp'], 1)
+    ('index', 'circuitsminpor', 'Circuits Minimal Portal Documentation',
+     ['Michael N. Lipp'], 1)
 ]
 
 

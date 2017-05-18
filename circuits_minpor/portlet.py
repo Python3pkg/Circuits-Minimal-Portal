@@ -29,7 +29,7 @@ import rbtranslations
 import tenjin
 import inspect
 
-class Portlet(BaseComponent):
+class Portlet(BaseComponent, metaclass=ABCMeta):
     """
     A portlet is a component that contributes to the portal's content.
     Implementations usually override the
@@ -41,8 +41,6 @@ class Portlet(BaseComponent):
     more complicated than necessary for the task at hand, but it should
     support future enhancements without fundamental changes.
     """
-    
-    __metaclass__ = ABCMeta
     
     class RenderMode(object):
         """
@@ -168,15 +166,13 @@ class Portlet(BaseComponent):
         def events(self):
             return self._events
 
-    class UrlGenerator(object):
+    class UrlGenerator(object, metaclass=ABCMeta):
         """
         This class defines the interface of an URL generator.
         An URL generator is used by the portlet to create the URLs
         for its rendered HTML. URL generators are provided by the
         portal via a :class:`~.URLGeneratorFactory`.
         """
-
-        __metaclass__ = ABCMeta
         
         @abstractmethod
         def event_url(self, event_name, **kwargs):
@@ -213,13 +209,11 @@ class Portlet(BaseComponent):
             """
             return "#"
 
-    class UrlGeneratorFactory(object):
+    class UrlGeneratorFactory(object, metaclass=ABCMeta):
         """
         The URL generator factory is passed to a portlet as
         parameter of the :class:`~.render` method.
         """
-
-        __metaclass__ = ABCMeta
 
         @abstractmethod        
         def make_generator(self, portlet, session):
@@ -237,7 +231,7 @@ class Portlet(BaseComponent):
             of portlets in the portal
         """
         self._handle = str(uuid.uuid4())
-        if not kwargs.has_key("channel"):
+        if "channel" not in kwargs:
             kwargs["channel"] = self._handle
         super(Portlet, self).__init__(*args, **kwargs)
         class_file = inspect.getfile(self.__class__)

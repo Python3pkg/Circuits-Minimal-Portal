@@ -62,5 +62,5 @@ if __name__ == '__main__':
     ServerTimePortlet().register(application)
     
     from circuits.tools import graph
-    print graph(application)
+    print(graph(application))
     application.run()

@@ -20,7 +20,7 @@
 """
 from circuits.core.components import BaseComponent
 from circuits_minpor.portlet import Portlet
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import tenjin
 from circuits_bricks.web.sessions import Sessions
 from circuits_minpor.utils.dispatcher import WebSocketsDispatcherPlus
@@ -41,6 +41,7 @@ import json
 from circuits.io.events import write
 from circuits_minpor.portal.portalsessionfacade import PortalSessionFacade
 from os.path import dirname, join
+from functools import reduce
 
 class PortalView(BaseComponent):
     """
@@ -242,7 +243,7 @@ class PortalView(BaseComponent):
 
         session = request.session
         
-        path_segs = urllib.unquote \
+        path_segs = urllib.parse.unquote \
             (request.path[len(self.prefix)+1:]).split("/")
         portlet = None
         if path_segs[0] != '':
@@ -361,7 +362,7 @@ class PortalView(BaseComponent):
             for portlet in self._portal._portlets:
                 for clazz, chan in portlet.description().events:
                     name = clazz.__module__ + "." + clazz.__name__
-                    if not self._accepted_events.has_key(name):
+                    if name not in self._accepted_events:
                         self._accepted_events[name] = set()
                     if self._accepted_events[name] == None:
                         continue
@@ -459,7 +460,7 @@ class TabManager(object):
             self._tabs[0]._selected = True
 
     def find_tab(self, tab_id):
-        found = filter(lambda x: id(x) == tab_id, self._tabs)
+        found = [x for x in self._tabs if id(x) == tab_id]
         if len(found) > 0:
             return found[0]
         return None
@@ -477,7 +478,7 @@ class TabManager(object):
                 self._tabs[0]._selected = True
 
     def add_solo(self, portlet):
-        solo_tabs = filter(lambda x: x.portlet == portlet, self._tabs)
+        solo_tabs = [x for x in self._tabs if x.portlet == portlet]
         if len(solo_tabs) > 0:
             self.select_tab(id(solo_tabs[0]))
             return
@@ -520,16 +521,16 @@ class UGFactory(Portlet.UrlGeneratorFactory):
                 url += "/" + portlet_mode + "/" + portlet_window_state
             return (url + "/event/" 
                     + str(self._session.setdefault("_expected_event", 1))
-                    + "/" + urllib.quote(event_name)
-                    + "/" + urllib.quote(channel)
+                    + "/" + urllib.parse.quote(event_name)
+                    + "/" + urllib.parse.quote(channel)
                     + ("" if len(kwargs) == 0 
-                       else "?" + urllib.urlencode(kwargs)))
+                       else "?" + urllib.parse.urlencode(kwargs)))
 
         def resource_url(self, resource):
             return self._prefix + "/portlet-resource/" \
-                + urllib.quote(self._handle) \
+                + urllib.parse.quote(self._handle) \
                 + (resource if resource.startswith("/") \
-                            else ("/" + urllib.quote(resource)))
+                            else ("/" + urllib.parse.quote(resource)))
 
     def make_generator(self, portlet, session):
         return self.UG(self._prefix, portlet, session)
@@ -584,8 +585,8 @@ class RenderThread(Thread):
         # Render the template.
         def portal_action_url(action, **kwargs):
             return (self._view.prefix
-                    + "/portal/" + urllib.quote(action)
-                    + (("?" + urllib.urlencode(kwargs)) if kwargs else ""))
+                    + "/portal/" + urllib.parse.quote(action)
+                    + (("?" + urllib.parse.urlencode(kwargs)) if kwargs else ""))
         def portlet_state_url(portlet_handle, mode="_", window="_"):
             return (self._view.prefix
                     + "/" + portlet_handle + "/" + mode + "/" + window)
